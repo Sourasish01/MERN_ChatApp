@@ -155,7 +155,7 @@ app.put("/api/auth/update-profile", protectRoute, async (req, res) => {
 
 app.get("/api/auth/check", protectRoute, async (req, res) => { // check if the user is authenticated
     try {
-        res.status(200).json(req.user); // try to access req.user, if it is available, then the user is authenticated
+        res.status(200).json(req.user); // try to access req.user, if it is available, then the user authenticated
       } catch (error) {
         console.log("Error in checkAuth controller", error.message);
         res.status(500).json({ message: "Internal Server Error" });
