@@ -10,7 +10,7 @@ const MessageInput = () => {
   const { sendMessage } = useChatStore();
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files[0]; // get the selected file ie . the image 
     if (!file.type.startsWith("image/")) {
       toast.error("Please select an image file");
       return;
@@ -49,7 +49,7 @@ const MessageInput = () => {
 
   return (
     <div className="p-4 w-full">
-      {imagePreview && (
+      {imagePreview && ( // show the image preview if an image is selected
         <div className="mb-3 flex items-center gap-2">
           <div className="relative">
             <img
@@ -81,16 +81,16 @@ const MessageInput = () => {
           <input
             type="file"
             accept="image/*"
-            className="hidden"
-            ref={fileInputRef}
-            onChange={handleImageChange}
+            className="hidden" //stays hidden ... so to take input we will use the button below with the image icon, as it is linked to this input by ref 
+            ref={fileInputRef} // reference to the file input to select the image
+            onChange={handleImageChange} // gets triggered when an image is selected 
           />
 
           <button
             type="button"
-            className={`hidden sm:flex btn btn-circle
-                     ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`}
-            onClick={() => fileInputRef.current?.click()}
+            className={`flex btn btn-circle                                 
+                     ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`} // show the image icon in green color if an image is selected , imagePre
+            onClick={() => fileInputRef.current?.click()} // open file input and select image, the selected image will be shown in the preview
           >
             <Image size={20} />
           </button>
