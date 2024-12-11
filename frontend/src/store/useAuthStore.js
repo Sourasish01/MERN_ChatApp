@@ -26,7 +26,7 @@ export const useAuthStore = create((set, get) => ({
      Axios automatically parses this JSON, and the user data becomes accessible in res.data
      */    
 
-      get().connectSocket();
+      get().connectSocket(); // here we are calling the connectSocket function to connect the socket, where get() is used to get the current state of the store, including the socket state, after the authUser state has been set from the response
 
     } catch (error) {
       console.log("Error in checkAuth:", error);
@@ -45,7 +45,7 @@ export const useAuthStore = create((set, get) => ({
       const res = await axiosInstance.post("/auth/signup", data);
       set({ authUser: res.data });
       toast.success("Account created successfully");
-      get().connectSocket();
+      get().connectSocket();// here we are calling the connectSocket function to connect the socket, when the user signs up
     } catch (error) {
       toast.error(error.response.data.message);
     } finally {
@@ -61,7 +61,7 @@ export const useAuthStore = create((set, get) => ({
       set({ authUser: res.data });
       toast.success("Logged in successfully");
 
-      get().connectSocket();
+      get().connectSocket(); // here we are calling the connectSocket function to connect the socket, when the user logs in
     } catch (error) {
       toast.error(error.response.data.message);
     } finally {
@@ -74,7 +74,7 @@ export const useAuthStore = create((set, get) => ({
       await axiosInstance.post("/auth/logout");
       set({ authUser: null });
       toast.success("Logged out successfully");
-      get().disconnectSocket();
+      get().disconnectSocket(); // here we are calling the disconnectSocket function to disconnect the socket, when the user logs out
     } catch (error) {
       toast.error(error.response.data.message);
     }
@@ -94,24 +94,28 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  connectSocket: () => {
-    const { authUser } = get();
-    if (!authUser || get().socket?.connected) return;
+  connectSocket: () => { // this function is used to connect the socket
+    
+    const { authUser } = get(); // here we are getting the authUser state from the store, get() is used to get the current state of the store , ie the authUser state
+    if (!authUser || get().socket?.connected) return; // if the user is not authenticated or the socket is already connected, we return from the function to prevent connecting the socket again
 
-    const socket = io(BASE_URL, {
-      query: {
+    const socket = io(BASE_URL, { // here we are creating a new socket connection using the socket.io-client library, where the base URL is the URL of the server , to which the socket will connect
+      query: {                    // here we are passing the userId to the server as a query, and the userId is the _id of the authenticated user
         userId: authUser._id,
       },
     });
-    socket.connect();
+    socket.connect(); // here we are connecting the socket to the server, once the socket is created, for the first time ,for the authenticated user
 
-    set({ socket: socket });
+    set({ socket: socket }); // here we are setting the socket state to the socket object, after the socket is created and connected to the server, teh socket object is stored in the socket state, which contains the socket connection ,ie the information about the connection, and can be accessed from the store
 
-    socket.on("getOnlineUsers", (userIds) => {
-      set({ onlineUsers: userIds });
+    socket.on("getOnlineUsers", (userIds) => { // here we are listening to the getOnlineUsers event, which is emitted by the server, and contains the userIds of the online users
+      set({ onlineUsers: userIds });           // here we are setting the onlineUsers state to the userIds, which contains the userIds of the online users, after the getOnlineUsers event is emitted by the server
     });
   },
-  disconnectSocket: () => {
-    if (get().socket?.connected) get().socket.disconnect();
+
+
+
+  disconnectSocket: () => { // this function is used to disconnect the socket
+    if (get().socket?.connected) get().socket.disconnect(); // if the socket is connected, we disconnect the socket, when the user logs out
   },
 }));
