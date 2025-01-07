@@ -9,9 +9,6 @@ import { generateToken } from "./config/utils.js";
 import { protectRoute } from "./middleware/auth.middleware.js";
 import cloudinary from "./config/cloudinary.js";
 import cors from "cors";
-import { server } from "./config/socket.js";
-
-
 
 
 import path from "path";
@@ -245,7 +242,7 @@ if (process.env.NODE_ENV === "production") {
 
 const PORT = process.env.PORT;
 
-server.listen(PORT, () => {
+app.listen(PORT, () => {
     console.log("Server running on http://localhost:" + PORT);
     connectDB();
 });
